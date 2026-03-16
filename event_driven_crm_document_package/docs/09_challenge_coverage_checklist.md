@@ -14,7 +14,8 @@
 - [x] Loading, error, and eventual-consistency states are visible in the UI
 - [x] README documents run instructions, architecture, async workflow, assumptions, and tradeoffs
 - [x] Source code, Compose config, and reviewer-facing docs are ready
-- [ ] Git repository packaging and remote push still need to happen
+- [x] Git repository packaging and remote push are complete
+- [x] GitHub Actions validates builds, service tests, and `docker compose config`
 
 ## Goes Beyond the Challenge
 See `upgrades/` for the gap analysis and next-step recommendations around:

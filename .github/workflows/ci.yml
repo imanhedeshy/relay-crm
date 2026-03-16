@@ -9,21 +9,51 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: cp .env.example .env
-      - run: npm ci
-      - run: npm run build:gateway
-      - run: npm run build:web
-      - run: python -m venv .venv
-      - run: . .venv/bin/activate && python -m pip install -U pip && python -m pip install -r services/auth-service/requirements.txt -r services/company-service/requirements.txt -r services/crm-service/requirements.txt -r services/workflow-service/requirements.txt
-      - run: . .venv/bin/activate && (cd services/auth-service && python manage.py test)
-      - run: . .venv/bin/activate && (cd services/company-service && python manage.py test)
-      - run: . .venv/bin/activate && (cd services/crm-service && python manage.py test)
-      - run: . .venv/bin/activate && (cd services/workflow-service && python manage.py test)
-      - run: docker compose config
+      - name: Prepare CI environment
+        run: |
+          cp .env.example .env
+          python - <<'PY'
+          from pathlib import Path
+
+          env_path = Path(".env")
+          lines = env_path.read_text().splitlines()
+          docker_only_prefixes = (
+              "AUTH_DB_HOST=",
+              "COMPANY_DB_HOST=",
+              "CRM_DB_HOST=",
+              "WORKFLOW_DB_HOST=",
+          )
+          filtered = [line for line in lines if not line.startswith(docker_only_prefixes)]
+          filtered.append("USE_POSTGRES=false")
+          env_path.write_text("\n".join(filtered) + "\n")
+          PY
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Build gateway
+        run: npm run build:gateway
+      - name: Build web app
+        run: npm run build:web
+      - name: Create Python virtual environment
+        run: python -m venv .venv
+      - name: Install Python dependencies
+        run: . .venv/bin/activate && python -m pip install -U pip && python -m pip install -r services/auth-service/requirements.txt -r services/company-service/requirements.txt -r services/crm-service/requirements.txt -r services/workflow-service/requirements.txt
+      - name: Run auth-service tests
+        run: . .venv/bin/activate && (cd services/auth-service && python manage.py test)
+      - name: Run company-service tests
+        run: . .venv/bin/activate && (cd services/company-service && python manage.py test)
+      - name: Run crm-service tests
+        run: . .venv/bin/activate && (cd services/crm-service && python manage.py test)
+      - name: Run workflow-service tests
+        run: . .venv/bin/activate && (cd services/workflow-service && python manage.py test)
+      - name: Validate Compose file
+        run: docker compose config

@@ -218,6 +218,13 @@ The frontend mirrors visibility for clarity by switching `VIEWER` into a read-on
   - create a lead as `Maya Manager`
   - observe `PENDING -> COMPLETED` plus generated follow-up activity
 
+### CI validation path
+
+- GitHub Actions runs the web and gateway production builds
+- Django service tests run on the GitHub runner with a CI-generated `.env` that removes Docker-only `*_DB_HOST` values
+- when those host variables are absent, each service falls back to SQLite for the test run instead of trying to reach Compose-only Postgres hostnames
+- `docker compose config` still runs in CI to validate the checked-in stack definition
+
 ### Current automated test coverage
 
 - auth membership model sanity

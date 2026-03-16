@@ -17,8 +17,9 @@
 - [x] Tradeoffs are documented
 
 ## Before Submission
-- [ ] Fresh clone dry run after repository initialization
-- [ ] Repo link ready after `git init`, commit, remote add, and push
+- [x] Fresh clone dry run after repository initialization
+- [x] Repo link ready after `git init`, commit, remote add, and push
+- [x] GitHub Actions validation path is configured for runner-safe service tests
 - [x] README reviewed for clarity
 - [x] Architectural story documented and review-ready
 - [x] Async workflow explanation documented and review-ready

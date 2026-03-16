@@ -1,0 +1,57 @@
+# Technical Challenge Source of Truth
+
+This package is grounded in the challenge requirements:
+
+- Build a simple CRM supporting customer-related data.
+- Support multiple companies organized in a parent/child hierarchy.
+- Enforce access control based on user roles.
+- Include at least one asynchronous workflow using a queue system.
+- Required technologies:
+  - Backend: Python, Django, GraphQL
+  - Frontend: React, Apollo Client (or equivalent)
+  - Architecture / Infrastructure: Nx workspace, GraphQL Federation, Kafka, Docker & Docker Compose
+- High-level expectations:
+  - Multiple backend services (not a single monolith)
+  - Each backend service exposes a GraphQL API
+  - A GraphQL gateway federates these APIs
+  - Frontend communicates only with the gateway
+  - Kafka is used for asynchronous processing
+  - All services run together via Docker Compose
+- Queue design expectations:
+  - Consider duplicate message delivery
+  - Retries
+  - Failure handling
+  - Observability
+- Parent/child companies:
+  - CRM data belongs to child companies
+  - Parent companies may see across children
+  - Child companies should be isolated
+- Access control:
+  - Must be enforced server-side, not just in the frontend
+- Frontend:
+  - Apollo Client
+  - Loading and error states
+  - Eventual consistency clearly reflected
+  - UI polish is not a priority
+- Testing:
+  - Some tests around important logic or clear explanation of what to test next
+- Docker Compose:
+  - Must run the entire system end-to-end with `docker compose up --build`
+- README:
+  - Must explain how to run
+  - Must list service URLs
+  - Must describe the architecture
+  - Must explain the asynchronous workflow
+  - Must document assumptions and tradeoffs
+- Deliverables:
+  - Git repository
+  - Working docker-compose.yml
+  - Clear README
+- Evaluation:
+  - Ease of running
+  - Architectural clarity
+  - Meaningful use of Kafka
+  - Correct access boundaries
+  - Proper GraphQL Federation
+  - Code quality
+  - Engineering judgment

@@ -1,0 +1,15 @@
+{
+  "name": "company-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/company-service",
+  "projectType": "application",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": ". ../../.venv/bin/activate && python manage.py test",
+        "cwd": "services/company-service"
+      }
+    }
+  }
+}

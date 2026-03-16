@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: cp .env.example .env
+      - run: npm ci
+      - run: npm run build:gateway
+      - run: npm run build:web
+      - run: python -m venv .venv
+      - run: . .venv/bin/activate && python -m pip install -U pip && python -m pip install -r services/auth-service/requirements.txt -r services/company-service/requirements.txt -r services/crm-service/requirements.txt -r services/workflow-service/requirements.txt
+      - run: . .venv/bin/activate && (cd services/auth-service && python manage.py test)
+      - run: . .venv/bin/activate && (cd services/company-service && python manage.py test)
+      - run: . .venv/bin/activate && (cd services/crm-service && python manage.py test)
+      - run: . .venv/bin/activate && (cd services/workflow-service && python manage.py test)
+      - run: docker compose config

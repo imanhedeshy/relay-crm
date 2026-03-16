@@ -1,0 +1,28 @@
+{
+  "name": "relaycrm",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "nx": "nx",
+    "dev:web": "npm run dev --workspace @relaycrm/web",
+    "dev:gateway": "npm run dev --workspace @relaycrm/gateway",
+    "build:web": "npm run build --workspace @relaycrm/web",
+    "build:gateway": "npm run build --workspace @relaycrm/gateway",
+    "lint": "nx run-many -t lint",
+    "test": "nx run-many -t test",
+    "format": "nx format:write"
+  },
+  "devDependencies": {
+    "@nx/js": "^22.5.4",
+    "@nx/react": "^22.5.4",
+    "@nx/vite": "^22.5.4",
+    "nx": "^22.5.4",
+    "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "koa": "3.1.2"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "companies": {
+    "parent": {
+      "id": "11111111-1111-4111-8111-111111111111",
+      "name": "ParentCo",
+      "companyType": "PARENT",
+      "parentId": null
+    },
+    "childA": {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "ChildCoA",
+      "companyType": "CHILD",
+      "parentId": "11111111-1111-4111-8111-111111111111"
+    },
+    "childB": {
+      "id": "33333333-3333-4333-8333-333333333333",
+      "name": "ChildCoB",
+      "companyType": "CHILD",
+      "parentId": "11111111-1111-4111-8111-111111111111"
+    }
+  },
+  "users": {
+    "parentAdmin": {
+      "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "fullName": "Priya Parent",
+      "email": "parent.admin@relaycrm.local"
+    },
+    "childManagerA": {
+      "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "fullName": "Maya Manager",
+      "email": "manager.a@relaycrm.local"
+    },
+    "childManagerB": {
+      "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      "fullName": "Ben Branch",
+      "email": "manager.b@relaycrm.local"
+    },
+    "salesRep": {
+      "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "fullName": "Sara Sales",
+      "email": "sales.rep@relaycrm.local"
+    },
+    "viewer": {
+      "id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "fullName": "Vic Viewer",
+      "email": "viewer@relaycrm.local"
+    }
+  },
+  "memberships": [
+    {
+      "userId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "companyId": "11111111-1111-4111-8111-111111111111",
+      "role": "PARENT_ADMIN"
+    },
+    {
+      "userId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "companyId": "22222222-2222-4222-8222-222222222222",
+      "role": "CHILD_MANAGER"
+    },
+    {
+      "userId": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      "companyId": "33333333-3333-4333-8333-333333333333",
+      "role": "CHILD_MANAGER"
+    },
+    {
+      "userId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "companyId": "22222222-2222-4222-8222-222222222222",
+      "role": "SALES_REP"
+    },
+    {
+      "userId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "companyId": "22222222-2222-4222-8222-222222222222",
+      "role": "VIEWER"
+    }
+  ],
+  "crm": {
+    "leads": [
+      {
+        "id": "44444444-4444-4444-8444-444444444441",
+        "companyId": "22222222-2222-4222-8222-222222222222",
+        "createdByUserId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "title": "Northwind expansion",
+        "contactName": "Nina West",
+        "contactEmail": "nina@northwind.example",
+        "status": "NEW",
+        "scoringStatus": "COMPLETED",
+        "score": 82
+      },
+      {
+        "id": "44444444-4444-4444-8444-444444444442",
+        "companyId": "22222222-2222-4222-8222-222222222222",
+        "createdByUserId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "title": "Acme pilot",
+        "contactName": "Alex Joy",
+        "contactEmail": "alex@acme.example",
+        "status": "NEW",
+        "scoringStatus": "PENDING",
+        "score": null
+      },
+      {
+        "id": "44444444-4444-4444-8444-444444444443",
+        "companyId": "33333333-3333-4333-8333-333333333333",
+        "createdByUserId": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "title": "Beta procurement",
+        "contactName": "Bianca Vale",
+        "contactEmail": "bianca@beta.example",
+        "status": "NEW",
+        "scoringStatus": "FAILED",
+        "score": null
+      }
+    ],
+    "activities": [
+      {
+        "leadId": "44444444-4444-4444-8444-444444444441",
+        "companyId": "22222222-2222-4222-8222-222222222222",
+        "kind": "FOLLOW_UP",
+        "note": "Call within 24 hours while intent is high."
+      },
+      {
+        "leadId": "44444444-4444-4444-8444-444444444443",
+        "companyId": "33333333-3333-4333-8333-333333333333",
+        "kind": "WORKFLOW_ERROR",
+        "note": "Scoring failed after retries."
+      }
+    ],
+    "deals": [
+      {
+        "companyId": "22222222-2222-4222-8222-222222222222",
+        "name": "Northwind renewal",
+        "stage": "DISCOVERY",
+        "valueCents": 1500000
+      },
+      {
+        "companyId": "33333333-3333-4333-8333-333333333333",
+        "name": "Beta expansion",
+        "stage": "PROPOSAL",
+        "valueCents": 980000
+      }
+    ]
+  }
+}

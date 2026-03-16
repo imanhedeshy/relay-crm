@@ -5,18 +5,21 @@ on:
     branches: ["main"]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Prepare CI environment
@@ -47,13 +50,67 @@ jobs:
         run: python -m venv .venv
       - name: Install Python dependencies
         run: . .venv/bin/activate && python -m pip install -U pip && python -m pip install -r services/auth-service/requirements.txt -r services/company-service/requirements.txt -r services/crm-service/requirements.txt -r services/workflow-service/requirements.txt
-      - name: Run auth-service tests
-        run: . .venv/bin/activate && (cd services/auth-service && python manage.py test)
-      - name: Run company-service tests
-        run: . .venv/bin/activate && (cd services/company-service && python manage.py test)
-      - name: Run crm-service tests
-        run: . .venv/bin/activate && (cd services/crm-service && python manage.py test)
-      - name: Run workflow-service tests
-        run: . .venv/bin/activate && (cd services/workflow-service && python manage.py test)
+      - name: Run unit and integration tests
+        run: npm test
       - name: Validate Compose file
         run: docker compose config
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - name: Prepare runtime environment
+        run: cp .env.example .env
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Start full stack
+        run: docker compose up -d --build
+      - name: Wait for gateway health
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:4000/health >/dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "Gateway did not become healthy in time." >&2
+          docker compose logs --no-color
+          exit 1
+      - name: Wait for web preview
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:3000 >/dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "Web preview did not become ready in time." >&2
+          docker compose logs --no-color
+          exit 1
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+      - name: Show compose logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-artifacts
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+      - name: Shut down stack
+        if: always()
+        run: docker compose down -v

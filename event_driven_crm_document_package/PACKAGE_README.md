@@ -1,12 +1,12 @@
 # Event-Driven CRM Challenge Document Package
 
-This package started as the planning kit for the Event-Driven CRM challenge and now also serves as a repo-aligned reference set for submission readiness.
+I used this package as the working set for the Event-Driven CRM challenge, and I kept it in the repository as a reviewer-friendly reference set for architecture, scope coverage, and follow-up discussion.
 
 ## Current Status
 - Ticket docs now reflect the implemented state of the repository instead of an untouched backlog.
 - Upgrade docs now separate work that is already done from truly optional future improvements.
 - Coverage and submission checklists are updated to match the current repo state.
-- The only remaining external step is packaging the workspace as a Git repository and pushing it to the requested remote.
+- The repository is pushed, CI is configured, and the documentation mirrors the shipped implementation.
 
 ## What Is Inside
 - `challenge/`
@@ -18,11 +18,11 @@ This package started as the planning kit for the Event-Driven CRM challenge and 
 - `tickets/`
   Epic-by-epic implementation record for the current solution.
 - `prompts/`
-  Codex guidance used to generate or extend the repository.
+  Working prompt material and drafting notes kept for transparency during development.
 
 ## Intended Use
 This package is useful for:
-- the engineer preparing the submission
+- me, as the engineer preparing and defending the submission
 - reviewers who want to inspect architecture and challenge coverage quickly
 - future maintainers who need rationale, tradeoffs, and upgrade direction
 

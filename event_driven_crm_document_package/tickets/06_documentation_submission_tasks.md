@@ -1,7 +1,7 @@
 # Epic 6 Tasks: Documentation and Submission
 
 ## Status
-Mostly complete. Documentation is current; repository packaging and the final push still need to happen.
+Complete. Documentation is current, the repository is pushed, and CI validates the submission path end to end.
 
 - [x] Write root README
 - [x] List service URLs
@@ -12,10 +12,12 @@ Mostly complete. Documentation is current; repository packaging and the final pu
 - [x] Add minimal runbook
 - [x] Add sample flows and reviewer guidance
 - [x] Update package tickets and upgrade docs to match the implemented system
-- [ ] Final dry-run from clean clone after repository initialization
+- [x] Final dry-run from clean clone after repository initialization
 - [x] Submission checklist
-- [ ] Initialize Git repository and push to `git@github.com:imanhedeshy/relay-crm.git`
+- [x] Initialize Git repository and push to `git@github.com:imanhedeshy/relay-crm.git`
+- [x] Add frontend, gateway, and browser automation coverage
+- [x] Wire GitHub Actions to run the automated validation path
 
 ## Submission Notes
 - The codebase and docs are in submission shape.
-- The remaining gap is operational: this workspace is not yet a Git repository, so a true clean-clone dry run has to happen after `git init` and first push.
+- The repository link, documentation, and CI validation flow are all in place for submission review.

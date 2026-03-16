@@ -15,7 +15,7 @@
 - [x] README documents run instructions, architecture, async workflow, assumptions, and tradeoffs
 - [x] Source code, Compose config, and reviewer-facing docs are ready
 - [x] Git repository packaging and remote push are complete
-- [x] GitHub Actions validates builds, service tests, and `docker compose config`
+- [x] GitHub Actions validates builds, web tests, gateway tests, service tests, Playwright e2e, and `docker compose config`
 
 ## Goes Beyond the Challenge
 See `upgrades/` for the gap analysis and next-step recommendations around:

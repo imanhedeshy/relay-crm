@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { FormEvent, useEffect, useState } from 'react';
-import { selectedUserIdVar } from './main';
+import { persistSelectedUserId, reloadPage, selectedUserIdVar } from './appState';
 
 const USERS_QUERY = gql`
   query SeedUsers {
@@ -601,14 +601,8 @@ export default function App() {
 
   function switchUser(nextUserId: string | null) {
     setIsSwitchingUser(true);
-
-    if (nextUserId) {
-      localStorage.setItem('relaycrm-user-id', nextUserId);
-    } else {
-      localStorage.removeItem('relaycrm-user-id');
-    }
-    selectedUserIdVar(nextUserId);
-    window.location.reload();
+    persistSelectedUserId(nextUserId);
+    reloadPage();
   }
 
   return (

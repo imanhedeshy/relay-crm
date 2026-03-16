@@ -6,19 +6,24 @@
     "apps/*"
   ],
   "scripts": {
-    "nx": "nx",
+    "nx": "npx nx",
     "dev:web": "npm run dev --workspace @relaycrm/web",
     "dev:gateway": "npm run dev --workspace @relaycrm/gateway",
     "build:web": "npm run build --workspace @relaycrm/web",
     "build:gateway": "npm run build --workspace @relaycrm/gateway",
-    "lint": "nx run-many -t lint",
-    "test": "nx run-many -t test",
-    "format": "nx format:write"
+    "lint": "npx nx run-many -t lint",
+    "test": "npx nx run-many -t test --parallel=1",
+    "test:web": "npm run test --workspace @relaycrm/web",
+    "test:gateway": "npm run test --workspace @relaycrm/gateway",
+    "test:services": "npx nx run-many -t test --projects auth-service,company-service,crm-service,workflow-service --parallel=1",
+    "test:e2e": "playwright test",
+    "format": "npx nx format:write"
   },
   "devDependencies": {
     "@nx/js": "^22.5.4",
     "@nx/react": "^22.5.4",
     "@nx/vite": "^22.5.4",
+    "@playwright/test": "^1.58.2",
     "nx": "^22.5.4",
     "typescript": "^5.8.3"
   },

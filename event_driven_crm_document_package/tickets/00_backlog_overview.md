@@ -1,7 +1,7 @@
 # Backlog Overview
 
 ## Status Snapshot
-This challenge backlog is functionally complete in the current repository. All six epics are implemented end to end, and the remaining non-code step is packaging the workspace as a Git repository before pushing to the remote.
+This challenge backlog is functionally complete in the current repository. All six epics are implemented end to end, the repository is pushed, and CI covers builds, service tests, and browser-level verification.
 
 ## Epic 1: Workspace and Infrastructure
 - Status: complete
@@ -31,4 +31,4 @@ This challenge backlog is functionally complete in the current repository. All s
 ## Epic 6: Documentation and Polish
 - Status: complete in repo
 - Root README, architecture notes, ADRs, contracts, and submission-oriented docs reflect the current implementation.
-- The last operational step is `git init` plus push to the requested remote.
+- The repository is pushed and the submission docs match the shipped system.

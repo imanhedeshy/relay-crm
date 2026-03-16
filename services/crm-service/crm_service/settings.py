@@ -35,7 +35,10 @@ DATABASES = {
     }
 }
 
-if os.getenv("CRM_DB_HOST") is None and os.getenv("USE_POSTGRES", "false").lower() != "true":
+use_postgres = os.getenv("USE_POSTGRES")
+should_use_postgres = use_postgres.lower() == "true" if use_postgres is not None else os.getenv("CRM_DB_HOST") is not None
+
+if not should_use_postgres:
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",

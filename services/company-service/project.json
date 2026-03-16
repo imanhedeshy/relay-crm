@@ -7,7 +7,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": ". ../../.venv/bin/activate && python manage.py test",
+        "command": "sh ../../libs/scripts/run_django_tests.sh services/company-service",
         "cwd": "services/company-service"
       }
     }

@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'node:url';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -15,11 +16,11 @@ dotenv.config();
 
 const port = Number(process.env.PORT ?? 4000);
 
-type GatewayContext = {
+export type GatewayContext = {
   userId?: string;
 };
 
-class RelayRemoteDataSource extends RemoteGraphQLDataSource<GatewayContext> {
+export class RelayRemoteDataSource extends RemoteGraphQLDataSource<GatewayContext> {
   override willSendRequest({ request, context }: GraphQLDataSourceProcessOptions<GatewayContext>) {
     if (context.userId && request.http) {
       request.http.headers.set('x-user-id', context.userId);
@@ -27,7 +28,7 @@ class RelayRemoteDataSource extends RemoteGraphQLDataSource<GatewayContext> {
   }
 }
 
-function createGateway() {
+export function createGateway() {
   return new ApolloGateway({
     supergraphSdl: new IntrospectAndCompose({
       subgraphs: [
@@ -43,7 +44,7 @@ function createGateway() {
   });
 }
 
-function isAbortedRequestError(error: unknown) {
+export function isAbortedRequestError(error: unknown) {
   if (!(error instanceof Error)) {
     return false;
   }
@@ -56,14 +57,21 @@ function isAbortedRequestError(error: unknown) {
   return requestError.message === 'request aborted' || requestError.type === 'request.aborted' || requestError.code === 'ECONNABORTED';
 }
 
-async function bootstrap() {
-  const server = new ApolloServer<GatewayContext>({
-    gateway: createGateway(),
+export function createApolloServer(gateway = createGateway()) {
+  return new ApolloServer<GatewayContext>({
+    gateway,
     includeStacktraceInErrorResponses: false,
     introspection: true
   });
-  await server.start();
+}
 
+export function createContext(req: express.Request): GatewayContext {
+  return {
+    userId: req.header('x-user-id') ?? undefined
+  };
+}
+
+export function createApp(server: ApolloServer<GatewayContext>) {
   const app = express();
   app.use(cors());
   app.get('/health', (_req, res) => {
@@ -73,9 +81,7 @@ async function bootstrap() {
     '/graphql',
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => ({
-        userId: req.header('x-user-id') ?? undefined
-      })
+      context: async ({ req }) => createContext(req)
     })
   );
   app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -88,6 +94,15 @@ async function bootstrap() {
 
     next(error);
   });
+
+  return app;
+}
+
+export async function bootstrap() {
+  const server = createApolloServer();
+  await server.start();
+
+  const app = createApp(server);
 
   await new Promise<void>((resolve) => {
     app.listen(port, () => {
@@ -109,4 +124,6 @@ async function startWithRetry() {
   }
 }
 
-startWithRetry();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  void startWithRetry();
+}

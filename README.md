@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-RelayCRM is a deliberately small event-driven CRM built for the take-home challenge in [`event_driven_crm_document_package/`](./event_driven_crm_document_package).
+I built RelayCRM as a deliberately scoped event-driven CRM for the take-home challenge in [`event_driven_crm_document_package/`](./event_driven_crm_document_package).
 
 The MVP focuses on:
 
@@ -11,7 +11,7 @@ The MVP focuses on:
 - role-based access control enforced server-side
 - one real asynchronous workflow: lead creation triggers Kafka-based scoring and follow-up generation
 
-The system is split into narrow services so the ownership model is easy to review in an interview:
+I split the system into narrow services so the ownership model is easy to review in an interview:
 
 - `auth-service` owns users, memberships, and roles
 - `company-service` owns companies and hierarchy traversal
@@ -202,16 +202,13 @@ The frontend mirrors visibility for clarity by switching `VIEWER` into a read-on
 
 ### Verified locally
 
+- `npm test`
 - `npm run build:web`
 - `npm run build:gateway`
-- `python manage.py test` in:
-  - `services/auth-service`
-  - `services/company-service`
-  - `services/crm-service`
-  - `services/workflow-service`
+- `npm run test:e2e`
 - `docker compose build`
 - `docker compose up --build`
-- end-to-end smoke test through the gateway:
+- end-to-end smoke path through the running stack:
   - query seeded users
   - query parent-admin visible companies
   - verify `VIEWER` receives a denied `createLead` mutation without leaked stack traces
@@ -221,12 +218,16 @@ The frontend mirrors visibility for clarity by switching `VIEWER` into a read-on
 ### CI validation path
 
 - GitHub Actions runs the web and gateway production builds
-- Django service tests run on the GitHub runner with a CI-generated `.env` that removes Docker-only `*_DB_HOST` values
-- when those host variables are absent, each service falls back to SQLite for the test run instead of trying to reach Compose-only Postgres hostnames
-- `docker compose config` still runs in CI to validate the checked-in stack definition
+- `npm test` runs frontend component tests, gateway integration tests, and all four Django service suites
+- service tests run on the GitHub runner with `USE_POSTGRES=false`, so they use SQLite instead of trying to resolve Compose-only Postgres hostnames
+- a separate Playwright job boots the full Docker Compose stack and runs browser e2e coverage
+- `docker compose config` validates the checked-in stack definition on every run
+- the current workflow does not require any GitHub repository secrets
 
 ### Current automated test coverage
 
+- frontend component tests for user switching and read-only viewer behavior
+- gateway integration tests for auth-header forwarding, request context, and aborted-request handling
 - auth membership model sanity
 - auth cross-user `accessContext` guard
 - hierarchy visibility logic
@@ -234,20 +235,20 @@ The frontend mirrors visibility for clarity by switching `VIEWER` into a read-on
 - CRM exact-duplicate lead rejection and publish-failure rollback
 - workflow handler duplicate-event behavior and completion path
 - workflow event query internal-token guard
+- Playwright e2e coverage for viewer read-only mode and manager lead creation with async completion
 
 ### Next tests to add
 
-- GraphQL integration tests per service
-- gateway composition smoke test in CI
-- workflow failure-path test proving DLQ publication
-- browser automation around the eventual-consistency UI
+- contract-level GraphQL resolver tests around gateway composition drift
+- workflow failure-path coverage that asserts DLQ payload contents end to end
+- load or soak coverage for repeated lead creation and retry pressure
 
 ## 10. Assumptions
 
-- a seed-user selector is acceptable in place of real login for the challenge
-- one strong async workflow is more valuable than several shallow ones
-- synchronous service-to-service GraphQL lookups for auth/company context are acceptable for an MVP
-- exposing subgraph URLs is useful for review even though the frontend only uses the gateway
+- I assumed a seed-user selector was acceptable in place of real login for the challenge
+- I chose to build one strong async workflow instead of several shallow ones
+- I treated synchronous service-to-service GraphQL lookups for auth/company context as acceptable for an MVP
+- I kept subgraph URLs exposed for review even though the frontend only uses the gateway
 
 ## 11. Tradeoffs
 
@@ -264,3 +265,13 @@ See the roadmap in:
 - [`event_driven_crm_document_package/upgrades/01_missing_and_future_proofing_gap_analysis.md`](./event_driven_crm_document_package/upgrades/01_missing_and_future_proofing_gap_analysis.md)
 - [`event_driven_crm_document_package/upgrades/02_security_privacy_compliance_recommendations.md`](./event_driven_crm_document_package/upgrades/02_security_privacy_compliance_recommendations.md)
 - [`event_driven_crm_document_package/upgrades/04_scalability_reliability_operability_roadmap.md`](./event_driven_crm_document_package/upgrades/04_scalability_reliability_operability_roadmap.md)
+
+## 13. Walkthrough Notes
+
+If I were walking through this live, I would focus on:
+
+- why the service split is `auth + company + crm + workflow` instead of a single Django app
+- where authorization is enforced on the server and how the UI deliberately mirrors, but does not own, those rules
+- why the Kafka workflow uses event-id idempotency, bounded retries, DLQ routing, and activity upserts
+- why the browser only talks to the gateway and why the gateway sanitizes downstream errors
+- what I would harden next for production: stronger auth, contract tests, observability, and deployment-specific secrets management

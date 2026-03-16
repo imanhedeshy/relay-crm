@@ -12,6 +12,9 @@
 - [x] Seed users and companies are available
 - [x] Async status is visible in the UI
 - [x] Authorization tests exist
+- [x] Frontend component tests exist
+- [x] Gateway integration tests exist
+- [x] Playwright end-to-end coverage exists
 - [x] README is complete
 - [x] Assumptions are documented
 - [x] Tradeoffs are documented
@@ -20,6 +23,7 @@
 - [x] Fresh clone dry run after repository initialization
 - [x] Repo link ready after `git init`, commit, remote add, and push
 - [x] GitHub Actions validation path is configured for runner-safe service tests
+- [x] GitHub Actions validates the browser flow against the Docker Compose stack
 - [x] README reviewed for clarity
 - [x] Architectural story documented and review-ready
 - [x] Async workflow explanation documented and review-ready
